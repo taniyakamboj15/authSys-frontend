@@ -1,17 +1,8 @@
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { logoutUser } from '../auth/auth.slice';
+import { useAuth } from '../hooks';
 import { Button } from '../components/ui/Button';
-import { showToast } from '../utils/toast.util';
 
 export const Profile = () => {
-  const { user } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
-
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    showToast.success('Logged out successfully');
-    // Guard will handle redirect
-  };
+  const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -55,7 +46,7 @@ export const Profile = () => {
           </div>
 
           <div className="border-t border-gray-200 pt-6 flex justify-end">
-            <Button variant="outline" onClick={handleLogout} className="w-auto border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700">
+            <Button variant="outline" onClick={logout} className="w-auto border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700">
               Sign out
             </Button>
           </div>

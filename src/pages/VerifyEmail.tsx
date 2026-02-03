@@ -1,83 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { verifyOTP, resendOTP } from '../api/email.api';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { showToast } from '../utils/toast.util';
+import { useVerifyEmail } from '../hooks';
 
 export const VerifyEmail = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [otp, setOtp] = useState('');
-  const [email, setEmail] = useState('');
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-  const countdownRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    // Get email from location state (passed from Register page)
-    const stateEmail = location.state?.email;
-    if (!stateEmail) {
-      showToast.error('Email not found. Please register again.');
-      navigate('/register');
-      return;
-    }
-    setEmail(stateEmail);
-  }, [location, navigate]);
-
-  useEffect(() => {
-    // Countdown timer for resend button
-    if (countdown > 0) {
-      countdownRef.current = setTimeout(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-    }
-
-    return () => {
-      if (countdownRef.current) {
-        clearTimeout(countdownRef.current);
-      }
-    };
-  }, [countdown]);
-
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (otp.length !== 6) {
-      showToast.error('Please enter a 6-digit code');
-      return;
-    }
-
-    setIsVerifying(true);
-    try {
-      await verifyOTP(email, otp);
-      showToast.success('Email verified successfully!');
-      navigate('/login');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Verification failed';
-      showToast.error(errorMessage);
-    } finally {
-      setIsVerifying(false);
-    }
-  };
-
-  const handleResend = async () => {
-    if (countdown > 0) return;
-
-    setIsResending(true);
-    try {
-      await resendOTP(email);
-      showToast.success('Verification code resent!');
-      setCountdown(60); // 60 second countdown
-      setOtp(''); // Clear OTP input
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to resend code';
-      showToast.error(errorMessage);
-    } finally {
-      setIsResending(false);
-    }
-  };
+  const { otp, setOtp, email, isVerifying, isResending, countdown, handleVerify, handleResend } = useVerifyEmail();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">

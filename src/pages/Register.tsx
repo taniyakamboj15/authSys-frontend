@@ -1,13 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../app/hooks';
+import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { showToast } from '../utils/toast.util';
-import { registerApi } from '../api/auth.api'; // Call API directly or use thunk if we want to auto-login
-import { useEffect } from 'react';
+import { useRegister } from '../hooks';
 
 const registerSchema = yup.object().shape({
   name: yup.string().min(2, "Name must be at least 2 characters").required("Name is required"),
@@ -21,37 +18,17 @@ const registerSchema = yup.object().shape({
 type RegisterFormValues = yup.InferType<typeof registerSchema>;
 
 export const Register = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { handleRegister } = useRegister();
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormValues>({
     resolver: yupResolver(registerSchema),
   });
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/profile');
-    }
-  }, [isAuthenticated, navigate]);
-
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      await registerApi(data);
-      showToast.success('Registration successful! Please check your email for verification code.');
-      // Navigate to verify email page with email in state
-      navigate('/verify-email', { state: { email: data.email } });
-    } catch (error: any) {
-      // Check if we have detailed validation errors
-      const errors = error.response?.data?.errors;
-      if (errors && Array.isArray(errors)) {
-        // Show each validation error separately
-        errors.forEach((err: { field: string; message: string }) => {
-          showToast.error(`${err.field}: ${err.message}`);
-        });
-      } else {
-        // Show generic error message
-        showToast.error(error.response?.data?.message || 'Registration failed');
-      }
+      await handleRegister(data);
+    } catch {
+      // Error already handled in hook
     }
   };
 
