@@ -15,7 +15,7 @@ export const useForgotPassword = () => {
       await forgotPasswordApi(email);
       showToast.success(TOAST_MESSAGES.PASSWORD.RESET_OTP_SENT);
       navigate(ROUTES.RESET_PASSWORD, { state: { email } });
-    } catch (error: any) {
+    } catch (error: unknown) {
       showToast.error(getErrorMessage(error, TOAST_MESSAGES.PASSWORD.RESET_REQUEST_FAILED));
     } finally {
       setIsSubmitting(false);

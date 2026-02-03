@@ -4,6 +4,7 @@ import { verifyOTP, resendOTP } from '../api/email.api';
 import { showToast } from '../utils/toast.util';
 import { useCountdown } from './useCountdown';
 import { ROUTES, TOAST_MESSAGES, TIMING } from '../constants';
+import { getErrorMessage } from '../utils/error.util';
 
 export const useVerifyEmail = () => {
   const navigate = useNavigate();
@@ -37,8 +38,8 @@ export const useVerifyEmail = () => {
       await verifyOTP(email, otp);
       showToast.success(TOAST_MESSAGES.EMAIL.VERIFICATION_SUCCESS);
       navigate(ROUTES.LOGIN);
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || TOAST_MESSAGES.EMAIL.VERIFICATION_FAILED;
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error, TOAST_MESSAGES.EMAIL.VERIFICATION_FAILED);
       showToast.error(errorMessage);
     } finally {
       setIsVerifying(false);
@@ -53,8 +54,8 @@ export const useVerifyEmail = () => {
       await resendOTP(email);
       showToast.success(TOAST_MESSAGES.EMAIL.CODE_RESENT);
       startCountdown();
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || TOAST_MESSAGES.EMAIL.RESEND_FAILED;
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error, TOAST_MESSAGES.EMAIL.RESEND_FAILED);
       showToast.error(errorMessage);
     } finally {
       setIsResending(false);

@@ -37,7 +37,7 @@ export const useResetPassword = () => {
       await verifyResetOTPApi(email, otpValue);
       setIsOtpVerified(true);
       showToast.success(TOAST_MESSAGES.PASSWORD.OTP_VERIFIED);
-    } catch (error: any) {
+    } catch (error: unknown) {
       showToast.error(getErrorMessage(error, TOAST_MESSAGES.PASSWORD.INVALID_OTP));
     } finally {
       setIsVerifying(false);
@@ -50,7 +50,7 @@ export const useResetPassword = () => {
       await resetPasswordApi(email, newPassword);
       showToast.success(TOAST_MESSAGES.PASSWORD.RESET_SUCCESS);
       navigate(ROUTES.LOGIN);
-    } catch (error: any) {
+    } catch (error: unknown) {
       showToast.error(getErrorMessage(error, TOAST_MESSAGES.PASSWORD.RESET_FAILED));
     } finally {
       setIsResetting(false);
@@ -63,7 +63,7 @@ export const useResetPassword = () => {
       await forgotPasswordApi(email);
       showToast.success(TOAST_MESSAGES.PASSWORD.RESET_OTP_SENT);
       startCountdown();
-    } catch (error: any) {
+    } catch (error: unknown) {
       showToast.error(getErrorMessage(error, TOAST_MESSAGES.PASSWORD.RESEND_FAILED));
     }
   }, [email, startCountdown]);

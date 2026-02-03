@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services/auth.service';
 import { type AuthState,  type User, type LoginCredentials } from '../types/auth.types';
+import { getErrorMessage } from '../utils/error.util';
 
 const initialState: AuthState = {
   user: null,
@@ -23,8 +24,8 @@ export const loginUser = createAsyncThunk('auth/login', async (credentials: Logi
   try {
     const user = await authService.login(credentials);
     return user;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || 'Login failed');
+  } catch (error: unknown) {
+    return rejectWithValue(getErrorMessage(error, 'Login failed'));
   }
 });
 

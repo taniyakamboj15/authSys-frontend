@@ -33,7 +33,7 @@ export const useRegister = () => {
       await registerApi(data);
       showToast.success('Registration successful! Please check your email for verification code.');
       navigate('/verify-email', { state: { email: data.email } });
-    } catch (error: any) {
+    } catch (error: unknown) {
     
       const validationErrors = getValidationErrors(error);
       if (validationErrors.length > 0) {

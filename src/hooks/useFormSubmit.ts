@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
 import { showToast } from '../utils/toast.util';
+import { getErrorMessage, getValidationErrors } from '../utils/error.util';
 
 interface FormConfig<T> {
   onSubmit: (data: T) => Promise<void>;
   onSuccess?: (data: T) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }
 
 
@@ -17,16 +18,15 @@ export const useFormSubmit = <T,>(config: FormConfig<T>) => {
       try {
         await config.onSubmit(data);
         config.onSuccess?.(data);
-      } catch (error: any) {
+      } catch (error: unknown) {
       
-        const errors = error.response?.data?.errors;
-        if (errors && Array.isArray(errors)) {
-          errors.forEach((err: { field: string; message: string }) => {
+        const validationErrors = getValidationErrors(error);
+        if (validationErrors.length > 0) {
+          validationErrors.forEach((err) => {
             showToast.error(`${err.field}: ${err.message}`);
           });
         } else {
-          const errorMessage = error.response?.data?.message || error.message || 'Operation failed';
-          showToast.error(errorMessage);
+          showToast.error(getErrorMessage(error, 'Operation failed'));
         }
         config.onError?.(error);
       } finally {
