@@ -1,25 +1,35 @@
 import { loginApi, registerApi, logoutApi, getProfileApi } from '../api/auth.api';
-import { type User } from '../types/auth.types';
+import type { User, LoginCredentials, RegisterData } from '../types/auth.types';
 
-// Service layer for business logic transformation if needed
-// Currently acts as a proxy but essential for scalability
 export const authService = {
-  login: async (credentials: any) => {
+  /**
+   * Login user with credentials
+   */
+  login: async (credentials: LoginCredentials): Promise<User> => {
     const response = await loginApi(credentials);
     return response.data.user;
   },
 
-  register: async (data: any) => {
+  /**
+   * Register new user
+   */
+  register: async (data: RegisterData): Promise<User> => {
     const response = await registerApi(data);
     return response.data.user;
   },
 
-  logout: async () => {
+  /**
+   * Logout current user
+   */
+  logout: async (): Promise<void> => {
     await logoutApi();
   },
 
+  /**
+   * Get current user profile
+   */
   getProfile: async (): Promise<User> => {
     const response = await getProfileApi();
-    return response.data; // Adjusted based on backend response structure ResponseUtil.success(res, user)
+    return response.data;
   },
 };

@@ -1,14 +1,13 @@
 import api from './axios';
 import { API_ENDPOINTS } from '../constants/api.constants';
-import type { LoginResponse, User } from '../types/auth.types';
+import type { LoginResponse, User, LoginCredentials, RegisterData } from '../types/auth.types';
 
-// Raw API calls
-export const loginApi = async (credentials: any) => {
+export const loginApi = async (credentials: LoginCredentials) => {
   const response = await api.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, credentials);
   return response.data;
 };
 
-export const registerApi = async (data: any) => {
+export const registerApi = async (data: RegisterData) => {
   const response = await api.post<LoginResponse>(API_ENDPOINTS.AUTH.REGISTER, data);
   return response.data;
 };

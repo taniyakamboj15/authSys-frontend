@@ -11,9 +11,7 @@ export const AuthGuard = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Only check auth if we don't know the state yet (though middleware handles this usually, 
-    // it's good to trigger an initial check if user is null but cookies might exist)
-    // Actually, slice initial state isLoading=true, we should dispatch checkAuth on mount
+
     dispatch(checkAuth());
   }, [dispatch]);
 

@@ -1,16 +1,4 @@
-/**
- * API Error Response types
- */
-export interface ValidationError {
-  field: string;
-  message: string;
-}
-
-export interface ApiErrorResponse {
-  success: false;
-  message: string;
-  errors?: ValidationError[];
-}
+import type { ApiErrorResponse, ValidationError } from '../types/api.types';
 
 /**
  * Helper to check if error is ApiErrorResponse

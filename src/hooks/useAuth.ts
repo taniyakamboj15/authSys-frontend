@@ -1,38 +1,32 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { useNavigate } from 'react-router-dom';
-import { checkAuth, loginUser, logoutUser } from '../auth/auth.slice';
+import { loginUser, logoutUser } from '../auth/auth.slice';
 import { showToast } from '../utils/toast.util';
+import { ROUTES, TOAST_MESSAGES } from '../constants';
 
-/**
- * Custom hook for authentication logic
- * Extracts common auth patterns used across components
- */
 export const useAuth = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading, error } = useAppSelector((state) => state.auth);
 
-  useEffect(() => {
-    // Check authentication on mount
-    dispatch(checkAuth());
-  }, [dispatch]);
 
-  const login = async (email: string, password: string) => {
+
+  const login = useCallback(async (email: string, password: string) => {
     const resultAction = await dispatch(loginUser({ email, password }));
     if (loginUser.fulfilled.match(resultAction)) {
-      showToast.success('Login successful!');
-      navigate('/profile');
+      showToast.success(TOAST_MESSAGES.AUTH.LOGIN_SUCCESS);
+      navigate(ROUTES.PROFILE);
       return { success: true };
     }
     return { success: false, error: resultAction.payload };
-  };
+  }, [dispatch, navigate]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await dispatch(logoutUser());
-    showToast.success('Logged out successfully');
-    navigate('/login');
-  };
+    showToast.success(TOAST_MESSAGES.AUTH.LOGOUT_SUCCESS);
+    navigate(ROUTES.LOGIN);
+  }, [dispatch, navigate]);
 
   return {
     user,

@@ -30,8 +30,15 @@ export interface LoginResponse {
   };
 }
 
-export interface ApiError {
-  success: false;
-  message: string;
-  errors?: { field: string; message: string }[];
+
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
 }

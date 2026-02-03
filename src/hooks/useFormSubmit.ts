@@ -7,9 +7,7 @@ interface FormConfig<T> {
   onError?: (error: any) => void;
 }
 
-/**
- * Custom hook for handling form submissions with loading state and error handling
- */
+
 export const useFormSubmit = <T,>(config: FormConfig<T>) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,7 +18,7 @@ export const useFormSubmit = <T,>(config: FormConfig<T>) => {
         await config.onSubmit(data);
         config.onSuccess?.(data);
       } catch (error: any) {
-        // Handle detailed validation errors
+      
         const errors = error.response?.data?.errors;
         if (errors && Array.isArray(errors)) {
           errors.forEach((err: { field: string; message: string }) => {

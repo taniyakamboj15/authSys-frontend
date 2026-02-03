@@ -4,9 +4,9 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { loginUser, clearError } from '../auth/auth.slice';
 import { showToast } from '../utils/toast.util';
 
-/**
- * Custom hook for login page logic
- */
+
+import type { LoginCredentials } from '../types/auth.types';
+
 export const useLogin = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -14,19 +14,19 @@ export const useLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const previousErrorRef = useRef<string | null>(null);
 
-  // Clear error on mount
+  
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
 
-  // Redirect if authenticated
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/profile');
     }
   }, [isAuthenticated, navigate]);
 
-  // Show only new errors
+
   useEffect(() => {
     if (error && error !== previousErrorRef.current) {
       showToast.error(error);
@@ -34,7 +34,7 @@ export const useLogin = () => {
     }
   }, [error]);
 
-  const handleLogin = async (data: { email: string; password: string }) => {
+  const handleLogin = async (data: LoginCredentials) => {
     setIsSubmitting(true);
     const resultAction = await dispatch(loginUser(data));
     if (loginUser.fulfilled.match(resultAction)) {

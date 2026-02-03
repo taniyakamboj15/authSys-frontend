@@ -2,12 +2,9 @@ import * as React from 'react';
 import { cn } from '../../utils/classnames.util';
 import { Loader } from './Loader';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  isLoading?: boolean;
-}
+import type { ButtonProps } from '../../types/ui.types';
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const ButtonComponent = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', isLoading, children, disabled, ...props }, ref) => {
     
     const variants = {
@@ -15,6 +12,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
       outline: "border border-gray-300 bg-transparent hover:bg-gray-50 text-gray-700",
       ghost: "bg-transparent hover:bg-gray-100 text-gray-700",
+      danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
     };
 
     return (
@@ -35,4 +33,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'Button';
+ButtonComponent.displayName = 'Button';
+
+export const Button = React.memo(ButtonComponent);

@@ -1,13 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import type { CountdownConfig } from '../types/hooks.types';
 
-interface CountdownConfig {
-  initialSeconds: number;
-  onComplete?: () => void;
-}
 
-/**
- * Custom hook for countdown timer (used in OTP resend)
- */
 export const useCountdown = (config: CountdownConfig) => {
   const [countdown, setCountdown] = useState(0);
   const [isActive, setIsActive] = useState(false);

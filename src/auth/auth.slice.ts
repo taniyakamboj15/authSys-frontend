@@ -1,27 +1,25 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services/auth.service';
-import { type AuthState,  type User } from '../types/auth.types';
+import { type AuthState,  type User, type LoginCredentials } from '../types/auth.types';
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
-  isLoading: true, // Start true to check session on mount
+  isLoading: true, 
   error: null,
 };
 
-// Async Thunks
+
 export const checkAuth = createAsyncThunk('auth/checkAuth', async (_, { rejectWithValue }) => {
   try {
     const user = await authService.getProfile();
-    console.log('✅ checkAuth SUCCESS:', user); // Debug log
     return user;
   } catch (error) {
-    console.log('❌ checkAuth FAILED:', error); // Debug log
     return rejectWithValue(null);
   }
 });
 
-export const loginUser = createAsyncThunk('auth/login', async (credentials: any, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk('auth/login', async (credentials: LoginCredentials, { rejectWithValue }) => {
   try {
     const user = await authService.login(credentials);
     return user;
